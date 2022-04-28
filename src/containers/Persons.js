@@ -2,20 +2,21 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import Person from '../components/Person/Person';
 import AddPerson from '../components/AddPerson/AddPerson';
-import * as actionTypes from '../store/actions';
+import {personActions} from "../store/actions";
 
 class Persons extends Component {
     render () {
         return (
             <div>
                 <AddPerson personAdded={this.props.onAddedPerson} />
-                {this.props.persons.map(person => (
-                    <Person 
+                {this.props.persons && this.props.persons.length && this.props.persons.map(person => (
+                    <Person
                         key={person.id}
-                        name={person.name} 
-                        age={person.age} 
+                        name={person.name}
+                        age={person.age}
                         clicked={() => this.props.onRemovedPerson(person.id)}/>
                 ))}
+                <h2>There are {this.props.counter} persons in total.</h2>
             </div>
         );
     }
@@ -23,14 +24,16 @@ class Persons extends Component {
 
 const mapStateToProps = state => {
     return {
-        persons: state.persons
+        // state.slice_name.initialState
+        persons: state.person.persons,
+        counter: state.person.counter,
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddedPerson: () => dispatch({type: actionTypes.ADD_PERSON}),
-        onRemovedPerson: (id) => dispatch({type: actionTypes.REMOVE_PERSON, personId: id})
+        onAddedPerson: () => dispatch(personActions.addPerson()),
+        onRemovedPerson: (id) => dispatch(personActions.removePerson(id))
     }
 }
 
